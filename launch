@@ -36,5 +36,24 @@ fi
 
 if [ "$1" == "mysql" ];
 then
-docker-compose -p aisuite exec --user=root database mysql -uroot -pweb web
+docker-compose -p aisuite exec --user=aisuite database mysql -uaisuite -pxxaisuitexx aisuite
 fi
+
+if [ "$1" == "create-database" ];
+then
+docker exec -i aisuite-database-1 mysql -uroot -paisuite aisuite < ./docker/database/dump.sql
+//table chat_flow
+fi
+
+if [ "$1" == "mkcert" ];
+then
+sudo apt update && sudo apt install libnss3-tools
+curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"	
+chmod +x mkcert-v*-linux-amd64
+sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+mkcert -install
+mkcert "*.traefik.me"
+mv _wildcard.traefik.me.pem ./docker/traefik/cert/cert.pem
+mv _wildcard.traefik.me-key.pem ./docker/traefik/cert/privkey.pem
+fi
+

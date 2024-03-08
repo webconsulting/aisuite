@@ -1,16 +1,18 @@
 The objective of this project is the installation in a single command of a suite of tools to use IA.  
-The project installs a flowise and a stable diffusion web UI to use.  
+The project installs a flowise app and a stable diffusion web UI to use.  
 All tools are local! So you can use them without an Internet connection.
+
 
 # Requirement
 
 - Docker with compose
 - Device with virtualisation enable
 - Admin access to device
+- 40Go disk space (By comment section stablediffusion in dockercompose.yml you'll need only 9Go but can't generate images )
 
 # Installation
 - Install Mkcert
-- launch ./launch
+- launch command ./launch start
 
 ## Install notes
 the first execution can be very long to download the different basic models
@@ -35,35 +37,25 @@ Source of webui is clone as a volume docker for startup speed requirements
 | ./launch redis           | Redis container redis-cli terminal     |
 | ./launch flushcache      | Flush all index of redis container     |
 | ./launch mysql           | Mysql container Mysql terminal         |
+| ./launch mkcert          | Install Mkcert and generate SSL cert   | # Only for linux
 
 
-## Mkcert (Optionnal)
+## Mkcert Installation on first launch
 Mkcert is used to access Docker containers from the host with hostname  
 We'll create a wildcard SSL certificate for the domain traefik.me
 
 ### Install SSL cert with Mkcert
-Download requirements and move binary in user bin folder
+
+Install Mkcert and wildcard for traefik.me (need sudo)
 ```
-sudo apt update && sudo apt install libnss3-tools
-curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"	
-chmod +x mkcert-v*-linux-amd64
-sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-```
-Install Mkcert and wildcard for traefik.me
-```
-mkcert -install
-mkcert "*.traefik.me"
-```
-Next command need to be executed on aisuite folder
-```
-mv _wildcard.traefik.me.pem ./docker/traefik/cert/cert.pem
-mv _wildcard.traefik.me-key.pem ./docker/traefik/cert/privkey.pem
+./launch mkcert
 ```
 
-### Install SSL cert On Windows, Windows with WSL, Mac
+### Install the SSL certificate on an operating system other than Linux
 Follow install of Mkcert on your OS : https://github.com/FiloSottile/mkcert  
-Windows need to use for WSL, don't use the container for install mkcert.  
-On a Windows terminal with admin access:
+
+On Windows with WSL, do not use the wsl distribution to install mkcert.
+Mkcert must be installed on Windows host operating system with administrator access, in a terminal:
 ```
 mkcert -install
 mkcert "*.traefik.me"
@@ -72,20 +64,17 @@ The command will generate 2 files : _wildcard.traefik.me.pem and _wildcard.traef
 copy and rename _wildcard.traefik.me.pem to ./docker/traefik/cert/cert.pem (command need to be executed on aisuite folder)  
 and copy _wildcard.traefik.me-key.pem to ./docker/traefik/cert/privkey.pem
 
-### Need more ?
-Please use Mkcert documentation : https://github.com/FiloSottile/mkcert
-
 ## Traefik
-define domains for access to container from host : subdomain of traefik.me
+Aftr create a wildcard on traefik.me domain with mkcert, we can access subdomain with https
 
-| Service                       | http from host                | Traefik name    | http from docker network |
-| ----------------------------- | ----------------------------- | --------------- | ------------------------ | 
-| Local Flowise                 | https://flowise.traefik.me    | flowise         | http://flowise:8282      |
-| Local Stable diffusion UI     | http://sd.traefik.me          | stablediffusion |                          |
-| Local VLLM AI API Server      | https://vllm.traefik.me       | vllm            | http://vllm:7474         |
-| Local AI API Server           | https://localai.traefik.me    | localai         | http://localai:8080      |
-| Local Chroma Db               | https://chroma.traefik.me     | chromadb        | http://chromadb:8000     |
-| Local Redis Server            | redis://redis.traefik.me      | redis           | redis://redis:6379       |
+| Service                          | Address from host             | Traefik name    | Address from docker network | Port |
+| -------------------------------- | ----------------------------- | --------------- | --------------------------- | ---- |
+| Local Flowise                    | https://flowise.traefik.me    | flowise         | http://flowise:8282         | 8282 |
+| Local Stable diffusion UI        | https://sd.traefik.me         | stablediffusion |                             | 7860 |
+| Local AI API Server (OPENAI API) | https://localai.traefik.me    | localai         | http://localai:8080         | 8080 |
+| Local Chroma Db                  |                               | chromadb        | http://chromadb:8000        | 8000 |
+| Local Redis Server               |                               | redis           | redis://redis:6379          | 6379 |
+| #Local VLLM Server (OPENAI API)  | https://vllm.traefik.me       | vllm            | http://vllm:7474            | 7474 |
 
 
 # Integrated Open source project
@@ -110,6 +99,9 @@ https://stability.ai/
 https://www.trychroma.com/
 
 ## Traefik
+https://doc.traefik.io/traefik/
+
+## Traefik me
 https://traefik.me
 
 ## Mkcert
@@ -122,3 +114,11 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 - https://sd.treafik.me for use Stable diffusion web UI
 - https://flowise.traefik.me for use flowise  
 - Use "http from docker network" (see above) for url in flowise
+
+## Change models of localai
+In docker-compose you can update localai section, on row command  
+`command: mixtral-instruct mistral-openorca bert-cpp all-minilm-l6-v2`  
+Available models and models for cuda 11 : https://localai.io/basics/getting_started/#running-models 
+You need one ai model for conversationnal api and one for embedding api 
+Exemples include in this projet use only mistral-openorca and bert-cpp-minilm-v6
+By update the command a restart will download new models automatically. 
