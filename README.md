@@ -7,12 +7,18 @@ All tools are local! So you can use them without an Internet connection.
 
 - Docker with compose
 - Device with virtualisation enable
+- Nivdia container tools https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 - Admin access to device
 - 40Go disk space (By comment section stablediffusion in dockercompose.yml you'll need only 9Go but can't generate images )
+- Ports 80, 443 and others available (Read section Traefik bellow for a complete port usage list)
 
 # Installation
-- Install Mkcert
-- launch command ./launch start
+Clone project.
+In project path folder run :
+```
+./launch mkcert
+./launch start
+```
 
 ## Install notes
 the first execution can be very long to download the different basic models

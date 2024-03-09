@@ -36,7 +36,7 @@ fi
 
 if [ "$1" == "mysql" ];
 then
-docker-compose -p aisuite exec --user=aisuite database mysql -uaisuite -pxxaisuitexx aisuite
+docker-compose -p aisuite exec --user=root database mysql -uaisuite -pxxaisuitexx aisuite
 fi
 
 if [ "$1" == "create-database" ];
