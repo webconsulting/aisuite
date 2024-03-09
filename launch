@@ -42,7 +42,7 @@ fi
 if [ "$1" == "create-database" ];
 then
 docker exec -i aisuite-database-1 mysql -uroot -paisuite aisuite < ./docker/database/dump.sql
-//table chat_flow
+
 fi
 
 if [ "$1" == "mkcert" ];
