@@ -121,6 +121,14 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 - https://flowise.traefik.me for use flowise  
 - Use "http from docker network" (see above) for url in flowise
 
+## Use Offline
+For use offline use 127.0.0.1 for access apps
+> http://127.0.0.1:8282 # flowise.traefik.me
+> http://127.0.0.1:7860 # sd.traefik.me
+
+Or add a row in you're host
+> 127.0.0.1 sd.traefik.me flowise.traefik.me
+
 ## Change models of localai
 In docker-compose you can update localai section, on row command  
 `command: mixtral-instruct mistral-openorca bert-cpp all-minilm-l6-v2`  
