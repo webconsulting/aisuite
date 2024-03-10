@@ -1,42 +1,42 @@
 #!/bin/bash
 if [ "$1" == "start" ];
 then
-docker-compose -p aisuite up -d
+docker compose -p aisuite up -d
 fi
 
 if [ "$1" == "stop" ];
 then
-docker-compose -p aisuite stop
+docker compose -p aisuite stop
 fi
 
 if [ "$1" == "flowise" ];
 then
-docker-compose -p aisuite exec --user=root flowise sh
+docker compose -p aisuite exec --user=root flowise sh
 fi
 
 if [ "$1" == "chromadb" ];
 then
-docker-compose -p aisuite exec --user=root chromadb sh
+docker compose -p aisuite exec --user=root chromadb sh
 fi
 
 if [ "$1" == "stablediffusion" ];
 then
-docker-compose -p aisuite exec --user=root stablediffusion sh
+docker compose -p aisuite exec --user=root stablediffusion sh
 fi
 
 if [ "$1" == "redis" ];
 then
-docker-compose -p aisuite exec --user=root redis redis-cli
+docker compose -p aisuite exec --user=root redis redis-cli
 fi
 
 if [ "$1" == "flushcache" ];
 then
-docker-compose -p aisuite exec --user=root redis redis-cli flushall
+docker compose -p aisuite exec --user=root redis redis-cli flushall
 fi
 
 if [ "$1" == "mysql" ];
 then
-docker-compose -p aisuite exec --user=root database mysql -uaisuite -pxxaisuitexx aisuite
+docker compose -p aisuite exec --user=root database mysql -uaisuite -pxxaisuitexx aisuite
 fi
 
 if [ "$1" == "create-database" ];

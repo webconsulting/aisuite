@@ -1,7 +1,6 @@
-The objective of this project is the installation in a single command of a suite of tools to use IA.  
+The objective of this project is the installation in a single command of a suite of tools for using IA.  
 The project installs a flowise app and a stable diffusion web UI to use.  
-All tools are local! So you can use them without an Internet connection.
-
+All tools are local! So you can use them Offline and stay cool with your personal data.
 
 # Requirement
 
@@ -119,7 +118,7 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 # Use
 - https://sd.treafik.me for use Stable diffusion web UI
 - https://flowise.traefik.me for use flowise  
-- Use "http from docker network" (see above) for url in flowise
+- Use "http from docker network" (see above) for hostname in flowise
 
 ## Use Offline
 For use offline use 127.0.0.1 for access apps
@@ -130,7 +129,7 @@ Or add a row in you're host
 > 127.0.0.1 sd.traefik.me flowise.traefik.me
 
 ## Change models of localai
-In docker-compose you can update localai section, on row command  
+In docker-compose.yml you can update localai section, on row command  
 `command: mixtral-instruct mistral-openorca bert-cpp all-minilm-l6-v2`  
 Available models and models for cuda 11 : https://localai.io/basics/getting_started/#running-models 
 You need one ai model for conversationnal api and one for embedding api 
