@@ -25,7 +25,7 @@ services:
       - "7860:7860"
   
   flowise:
-    image: flowiseai/flowise
+    build: ./docker/flowise
     restart: unless-stopped
     environment:
       - PORT=8282
@@ -61,7 +61,6 @@ services:
       - '8282:8282'
     volumes:
       - ./docker/flowise/.flowise:/root/.flowise
-      - ./docker/flowise/.cache:/root/.cache
     command: /bin/sh -c "sleep 3; flowise start"
 
   database:
