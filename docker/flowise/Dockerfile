@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 
 RUN rm -rf /var/cache/* && \
     apk update && \
-    apk upgrade -U && \
+    apk upgrade && \
     apk add git python3 py3-pip make g++ build-base cairo-dev pango-dev chromium
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true

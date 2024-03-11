@@ -84,28 +84,6 @@ services:
     volumes:
       - ./docker/redis:/data
 
-  # vllm:
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities:
-  #               - gpu
-  #   labels:
-  #     - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.routers.vllm-secure.tls=true"
-  #     - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   ports:
-  #     - 7474:7474
-  #   volumes:
-  #     - ~/.cache/huggingface:/root/.cache/huggingface
-  #   ipc: host
-  #   image: vllm/vllm-openai:latest 
-  #   command: --model mistralai/Mistral-7B-Instruct-v0.2 --max-model-len 15400 --port 7474
-
   chromadb:
     ipc: host
     image: chromadb/chroma:latest
@@ -118,13 +96,6 @@ services:
       - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
       - CHROMA_HOST_ADDR=chromadb
       - CHROMA_HOST_PORT=8000
-      # - CHROMA_API_IMPL="chromadb.api.fastapi.FastAPI"
-      # - CHROMA_SERVER_HTTP_PORT=8484
-      # - CHROMA_DB_IMPL=clickhouse
-      # - CLICKHOUSE_HOST=clickhouse
-      # - CLICKHOUSE_PORT=8123
-      # - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:8585"]
-#   command: "--workers 1 --host 0.0.0.0 --port 8484 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive 30"
 
   localai:
     tty: true
@@ -164,5 +135,34 @@ services:
       - ./docker/traefik/tls.yml:/etc/traefik/tls.yml
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker/traefik/cert:/etc/ssl/traefik
+# chromadb
+    # environment:
+      # - CHROMA_API_IMPL="chromadb.api.fastapi.FastAPI"
+      # - CHROMA_SERVER_HTTP_PORT=8484
+      # - CHROMA_DB_IMPL=clickhouse
+      # - CLICKHOUSE_HOST=clickhouse
+      # - CLICKHOUSE_PORT=8123
+      # - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:8585"]
+#   command: "--workers 1 --host 0.0.0.0 --port 8484 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive 30"
 
-
+  # vllm:
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities:
+  #               - gpu
+  #   labels:
+  #     - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+  #     - "traefik.http.routers.vllm-secure.tls=true"
+  #     - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  #   ports:
+  #     - 7474:7474
+  #   volumes:
+  #     - ~/.cache/huggingface:/root/.cache/huggingface
+  #   ipc: host
+  #   image: vllm/vllm-openai:latest 
+  #   command: --model mistralai/Mistral-7B-Instruct-v0.2 --max-model-len 15400 --port 7474
