@@ -1,6 +1,5 @@
-The objective of this project is the installation in a single command of a suite of tools for using IA.  
-The project installs a flowise app and a stable diffusion web UI to use.  
-All tools are local! So you can use them Offline and stay cool with your personal data.
+Commands for install suite of local tools for using AI
+
 
 # Requirement
 
