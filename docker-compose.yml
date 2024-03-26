@@ -13,8 +13,8 @@ services:
                 - gpu
     build: ./docker/stablediffusion
     ipc: host
-    # volumes:
-    #     - ./docker/stablediffusion/src:/usr/src/app
+    volumes:
+         - ./docker/stablediffusion/src:/usr/src/app
     labels:
       - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
       - "traefik.http.routers.sd-secure.tls=true"
