@@ -7,7 +7,7 @@ Commands for install suite of local tools for using AI
 - Device with virtualisation enable
 - Nivdia container tools https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 - Admin access to device
-- 40Go disk space (By comment section stablediffusion in dockercompose.yml you'll need only 12Go but can't generate images )
+- 40Go disk space (By comment section stablediffusion in dockercompose.yml you'll need only 12Go but can't generate images)
 - Ports 80, 443 and others available (Read section Traefik bellow for a complete port usage list)
 
 # Installation
@@ -69,7 +69,7 @@ copy and rename _wildcard.traefik.me.pem to ./docker/traefik/cert/cert.pem (comm
 and copy _wildcard.traefik.me-key.pem to ./docker/traefik/cert/privkey.pem
 
 ## Traefik
-Aftr create a wildcard on traefik.me domain with mkcert, we can access subdomain with https
+After create a wildcard on traefik.me domain with mkcert, we can access subdomain with https
 
 | Service                          | Address from host             | Traefik name    | Address from docker network | Port |
 | -------------------------------- | ----------------------------- | --------------- | --------------------------- | ---- |
@@ -131,7 +131,7 @@ Or add a row in you're host
 In docker-compose.yml you can update localai section, on row command  
 `command: mixtral-instruct mistral-openorca bert-cpp all-minilm-l6-v2`  
 Available models and models for cuda 11 : https://localai.io/basics/getting_started/#running-models 
-Available for embeeding in project : text-embedding-ada-002 and bert-cpp-minilm-v6
+Available for embedding in project : text-embedding-ada-002 and bert-cpp-minilm-v6
 Available for chat in project : mixtral-instruct and mistral-openorca
 You need one ai model for conversationnal api and one for embedding api 
 Exemples include in this projet use only mistral-openorca and bert-cpp-minilm-v6
