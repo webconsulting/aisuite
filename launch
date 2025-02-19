@@ -29,6 +29,11 @@ then
 docker compose -p aisuite exec --user=root redis redis-cli
 fi
 
+if [ "$1" == "langflow" ];
+then
+docker compose -p aisuite exec --user=root langflow sh
+fi
+
 if [ "$1" == "flushcache" ];
 then
 docker compose -p aisuite exec --user=root redis redis-cli flushall

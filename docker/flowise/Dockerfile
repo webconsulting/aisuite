@@ -1,5 +1,5 @@
 # Docker file for Flowise
-FROM node:20.16-alpine3.19
+FROM node:20.18-alpine3.20
 
 USER root
 

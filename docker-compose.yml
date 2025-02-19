@@ -60,6 +60,17 @@ services:
     volumes:
       - ./docker/flowise/.flowise:/root/.flowise
     command: /bin/sh -c "sleep 3; flowise start"
+  
+  langflow:
+    image: langflowai/langflow:latest
+    restart: unless-stopped
+    labels:
+      - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+      - "traefik.http.routers.langflow-secure.tls=true"
+      - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+      - '7862:7860'
 
   database:
     ipc: host

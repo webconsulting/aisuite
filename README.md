@@ -36,6 +36,7 @@ Source of webui is clone as a volume docker for startup speed requirements
 | ./launch start           | Start all containers                   |
 | ./launch stop            | Stop  all containers                   |
 | ./launch flowise         | Flowise container sh terminal          |
+| ./launch langflow        | Langflow container sh terminal         |
 | ./launch chromadb        | Chromadb container sh terminal         |
 | ./launch stablediffusion | Stable diffusion container sh terminal |
 | ./launch redis           | Redis container redis-cli terminal     |
@@ -78,6 +79,7 @@ After create a wildcard on traefik.me domain with mkcert, we can access subdomai
 | Local AI API Server (OPENAI API) | https://localai.traefik.me    | localai         | http://localai:8080         | 8080 |
 | Local Chroma Db                  |                               | chromadb        | http://chromadb:8000        | 8000 |
 | Local Redis Server               |                               | redis           | redis://redis:6379          | 6379 |
+| Local Langflow                   | https://langflow.traefik.me   | langflow        | http://langflow:7860        | 7862 |
 | #Local VLLM Server (OPENAI API)  | https://vllm.traefik.me       | vllm            | http://vllm:7474            | 7474 |
 
 
@@ -92,6 +94,9 @@ https://github.com/vllm-project/vllm
 
 ## Flowise 
 https://flowiseai.com/
+
+## Langflow 
+https://www.langflow.org/
 
 ## Mistral AI
 https://mistral.ai/
@@ -117,15 +122,17 @@ https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 # Use
 - https://sd.treafik.me for use Stable diffusion web UI
 - https://flowise.traefik.me for use flowise  
-- Use "http from docker network" (see above) for hostname in flowise
+- https://langflow.traefik.me for use langflow  
+- Use "http from docker network" (see above) for hostname in network apps (flowise, langflow)
 
 ## Use Offline
 For use offline use 127.0.0.1 for access apps
 > http://127.0.0.1:8282 # flowise.traefik.me
 > http://127.0.0.1:7860 # sd.traefik.me
+> http://127.0.0.1:7862 # langflow.traefik.me
 
 Or add a row in you're host
-> 127.0.0.1 sd.traefik.me flowise.traefik.me
+> 127.0.0.1 sd.traefik.me flowise.traefik.me langflow.traefik.me
 
 ## Change models of localai
 In docker-compose.yml you can update localai section, on row command  
