@@ -20,5 +20,5 @@ providers:
         endpoint: unix:///var/run/docker.sock
         watch: true
         exposedByDefault: true
-        defaultRule: "HostRegexp(`localai.traefik.me`,`{{ index .Labels \"com.docker.compose.service\"}}-{dashed-ip:.*}.traefik.me`)"
+        defaultRule: "HostRegexp(`localai.traefik.me`) || HostRegexp(`{{ index .Labels \"com.docker.compose.service\"}}-{dashed-ip:.*}.traefik.me`)"
 

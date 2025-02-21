@@ -120,8 +120,8 @@ services:
                       count: all
                       capabilities:
                           - gpu
-    image: localai/localai:v2.9.0-cublas-cuda12-core
-    command: mixtral-instruct mistral-openorca bert-cpp all-minilm-l6-v2
+    image: localai/localai:latest-aio-gpu-nvidia-cuda-12
+    command: mixtral-instruct mistral-openorca bert-cpp whisper.cpp all-minilm-l6-v2
     volumes:
       - ./docker/localai:/build/models
     labels:
@@ -130,9 +130,31 @@ services:
       - "traefik.http.routers.localai.rule=Host(`127.0.0.1`) || Host(`localai.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
 
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: unless-stopped
+    env_file: ./docker/n8n/.env
+    ports:
+        - 8181:5678
+    deploy:
+        resources:
+            reservations:
+                devices:
+                    - driver: nvidia
+                      count: all
+                      capabilities:
+                          - gpu
+    volumes:
+      - ./docker/n8n/storage:/home/node/.n8n
+    labels:
+      - "traefik.http.routers.n8n-secure.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
+      - "traefik.http.routers.n8n-secure.tls=true"
+      - "traefik.http.routers.n8n.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    
   traefik:
     restart: unless-stopped
-    image: traefik:3.1
+    image: traefik:3.3.3
     ports:
       - "80:80"
       - "443:443"
@@ -144,6 +166,8 @@ services:
       - ./docker/traefik/tls.yml:/etc/traefik/tls.yml
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker/traefik/cert:/etc/ssl/traefik
+
+
 # chromadb
     # environment:
       # - CHROMA_API_IMPL="chromadb.api.fastapi.FastAPI"
