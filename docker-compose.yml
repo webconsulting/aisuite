@@ -25,31 +25,7 @@ services:
   flowise:
     build: ./docker/flowise
     restart: unless-stopped
-    environment:
-      - PORT=8282
-      # - CORS_ORIGINS=${CORS_ORIGINS}
-      # - IFRAME_ORIGINS=${IFRAME_ORIGINS}
-      # - FLOWISE_USERNAME=${FLOWISE_USERNAME}
-      # - FLOWISE_PASSWORD=${FLOWISE_PASSWORD}
-      # - FLOWISE_FILE_SIZE_LIMIT=${FLOWISE_FILE_SIZE_LIMIT}
-      - DEBUG=true
-      - DATABASE_PATH=/root/.flowise
-      - DATABASE_TYPE=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_HOST=database
-      - DATABASE_NAME=aisuite
-      - DATABASE_USER=aisuite
-      - DATABASE_PASSWORD=xxaisuitexx
-      - DATABASE_SSL=false
-      - OVERRIDE_DATABASE=true
-      # - DATABASE_SSL_KEY_BASE64=${DATABASE_SSL_KEY_BASE64}
-      - APIKEY_PATH=/root/.flowise
-      - SECRETKEY_PATH=/root/.flowise
-      # - FLOWISE_SECRETKEY_OVERWRITE=${FLOWISE_SECRETKEY_OVERWRITE}
-      # - LOG_LEVEL=${LOG_LEVEL}
-      - LOG_PATH=/root/.flowise/logs
-      - BLOB_STORAGE_PATH=/root/.flowise/storage
-      # - DISABLE_FLOWISE_TELEMETRY=${DISABLE_FLOWISE_TELEMETRY}
+    env_file: ./docker/flowise/.env
     labels:
       - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
       - "traefik.http.routers.flowise-secure.tls=true"
@@ -64,6 +40,9 @@ services:
   langflow:
     image: langflowai/langflow:latest
     restart: unless-stopped
+    env_file: ./docker/langflow/.env
+    volumes:
+      - ./docker/langflow/storage:/app/langflow
     labels:
       - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
       - "traefik.http.routers.langflow-secure.tls=true"
@@ -121,9 +100,9 @@ services:
                       capabilities:
                           - gpu
     image: localai/localai:latest-aio-gpu-nvidia-cuda-12
-    command: mixtral-instruct mistral-openorca bert-cpp whisper.cpp all-minilm-l6-v2
+    # command: mistral-openorca bert-cpp whisper.cpp all-minilm-l6-v2
     volumes:
-      - ./docker/localai:/build/models
+      - ./docker/localai/storage:/build/models
     labels:
       - "traefik.http.routers.localai-secure.rule=Host(`127.0.0.1`) || Host(`localai.traefik.me`)"
       - "traefik.http.routers.localai-secure.tls=true"
@@ -151,7 +130,29 @@ services:
       - "traefik.http.routers.n8n-secure.tls=true"
       - "traefik.http.routers.n8n.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-    
+
+  # vllm:
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities:
+  #               - gpu
+  #   labels:
+  #     - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+  #     - "traefik.http.routers.vllm-secure.tls=true"
+  #     - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  #   ports:
+  #     - 7474:7474
+  #   volumes:
+  #     - ~/.cache/huggingface:/root/.cache/huggingface
+  #   ipc: host
+  #   image: vllm/vllm-openai:latest 
+  #   command: --model meta-llama/Llama-3.3-70B-Instruct --port 7474 --max-model-len 65536 --max-num-seqs=8192
+
   traefik:
     restart: unless-stopped
     image: traefik:3.3.3
@@ -178,25 +179,5 @@ services:
       # - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:8585"]
 #   command: "--workers 1 --host 0.0.0.0 --port 8484 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive 30"
 
-  # vllm:
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities:
-  #               - gpu
-  #   labels:
-  #     - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.routers.vllm-secure.tls=true"
-  #     - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   ports:
-  #     - 7474:7474
-  #   volumes:
-  #     - ~/.cache/huggingface:/root/.cache/huggingface
-  #   ipc: host
-  #   image: vllm/vllm-openai:latest 
-  #   command: --model mistralai/Mixtral-8x22B-v0.1 --port 7474 --max-model-len 65536 --max-num-seqs=8192
+
     # --max-model-len 15400
