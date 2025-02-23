@@ -38,7 +38,7 @@ services:
     command: /bin/sh -c "sleep 3; flowise start"
   
   langflow:
-    image: langflowai/langflow:latest
+    build: ./docker/langflow
     restart: unless-stopped
     env_file: ./docker/langflow/.env
     volumes:
