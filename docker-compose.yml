@@ -35,7 +35,6 @@ services:
       - '8282:8282'
     volumes:
       - ./docker/flowise/.flowise:/root/.flowise
-    command: /bin/sh -c "sleep 3; flowise start"
   
   langflow:
     build: ./docker/langflow
