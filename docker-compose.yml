@@ -1,6 +1,5 @@
 services:
   stablediffusion:
-    tty: true
     deploy:
       resources:
         reservations:
@@ -10,9 +9,9 @@ services:
               capabilities:
                 - gpu
     build: ./docker/stablediffusion
-    ipc: host
+    restart: on-failure:2
     volumes:
-         - ./docker/stablediffusion/src:/usr/src/app
+      - ./docker/stablediffusion/src:/usr/src/app
     labels:
       - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
       - "traefik.http.routers.sd-secure.tls=true"
@@ -24,8 +23,10 @@ services:
   
   flowise:
     build: ./docker/flowise
-    restart: unless-stopped
     env_file: ./docker/flowise/.env
+    restart: on-failure:2
+    volumes:
+      - ./docker/flowise/.flowise:/root/.flowise
     labels:
       - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
       - "traefik.http.routers.flowise-secure.tls=true"
@@ -33,13 +34,11 @@ services:
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
       - '8282:8282'
-    volumes:
-      - ./docker/flowise/.flowise:/root/.flowise
   
   langflow:
     build: ./docker/langflow
-    restart: unless-stopped
     env_file: ./docker/langflow/.env
+    restart: on-failure:2
     volumes:
       - ./docker/langflow/storage:/app/langflow
     labels:
@@ -51,7 +50,6 @@ services:
       - '7862:7860'
 
   database:
-    ipc: host
     image: mysql:8.0.32
     command: mysqld --default-authentication-plugin=mysql_native_password
     environment:
@@ -72,34 +70,25 @@ services:
       - ./docker/redis:/data
 
   chromadb:
-    ipc: host
+    restart: on-failure:2
     image: chromadb/chroma:latest
+    env_file: ./docker/chromadb/.env
     volumes:
-      - ./docker/chromadb:/chroma/chroma
+      - ./docker/chromadb/storage:/chroma/chroma
     ports:
       - 8000:8000
-    environment:
-      - IS_PERSISTENT=TRUE
-      - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
-      - CHROMA_HOST_ADDR=chromadb
-      - CHROMA_HOST_PORT=8000
 
   localai:
-    tty: true
-    stdin_open: true
-    ipc: host
-    ports:
-        - 8081:8080
     deploy:
-        resources:
-            reservations:
-                devices:
-                    - driver: nvidia
-                      count: all
-                      capabilities:
-                          - gpu
-    image: localai/localai:latest-aio-gpu-nvidia-cuda-12
-    # command: mistral-openorca bert-cpp whisper.cpp all-minilm-l6-v2
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    build: ./docker/localai
+    restart: on-failure:2
     volumes:
       - ./docker/localai/storage:/build/models
     labels:
@@ -107,21 +96,21 @@ services:
       - "traefik.http.routers.localai-secure.tls=true"
       - "traefik.http.routers.localai.rule=Host(`127.0.0.1`) || Host(`localai.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+        - 8081:8080
 
   n8n:
-    image: docker.n8n.io/n8nio/n8n
-    restart: unless-stopped
-    env_file: ./docker/n8n/.env
-    ports:
-        - 8181:5678
     deploy:
-        resources:
-            reservations:
-                devices:
-                    - driver: nvidia
-                      count: all
-                      capabilities:
-                          - gpu
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    build: ./docker/n8n
+    env_file: ./docker/n8n/.env
+    restart: on-failure
     volumes:
       - ./docker/n8n/storage:/home/node/.n8n
     labels:
@@ -129,6 +118,8 @@ services:
       - "traefik.http.routers.n8n-secure.tls=true"
       - "traefik.http.routers.n8n.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+        - 8181:5678
 
   # vllm:
   #   deploy:
@@ -148,12 +139,11 @@ services:
   #     - 7474:7474
   #   volumes:
   #     - ~/.cache/huggingface:/root/.cache/huggingface
-  #   ipc: host
   #   image: vllm/vllm-openai:latest 
   #   command: --model meta-llama/Llama-3.3-70B-Instruct --port 7474 --max-model-len 65536 --max-num-seqs=8192
 
   traefik:
-    restart: unless-stopped
+    restart: on-failure:2
     image: traefik:3.3.3
     ports:
       - "80:80"
@@ -166,17 +156,3 @@ services:
       - ./docker/traefik/tls.yml:/etc/traefik/tls.yml
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker/traefik/cert:/etc/ssl/traefik
-
-
-# chromadb
-    # environment:
-      # - CHROMA_API_IMPL="chromadb.api.fastapi.FastAPI"
-      # - CHROMA_SERVER_HTTP_PORT=8484
-      # - CHROMA_DB_IMPL=clickhouse
-      # - CLICKHOUSE_HOST=clickhouse
-      # - CLICKHOUSE_PORT=8123
-      # - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["http://localhost:8585"]
-#   command: "--workers 1 --host 0.0.0.0 --port 8484 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive 30"
-
-
-    # --max-model-len 15400
