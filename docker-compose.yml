@@ -9,7 +9,7 @@ services:
               capabilities:
                 - gpu
     build: ./docker/stablediffusion
-    restart: on-failure:2
+    restart: unless-stopped
     volumes:
       - ./docker/stablediffusion/src:/usr/src/app
     labels:
@@ -24,7 +24,7 @@ services:
   flowise:
     build: ./docker/flowise
     env_file: ./docker/flowise/.env
-    restart: on-failure:2
+    restart: unless-stopped
     volumes:
       - ./docker/flowise/.flowise:/root/.flowise
     labels:
@@ -38,7 +38,7 @@ services:
   langflow:
     build: ./docker/langflow
     env_file: ./docker/langflow/.env
-    restart: on-failure:2
+    restart: unless-stopped
     volumes:
       - ./docker/langflow/storage:/app/langflow
     labels:
@@ -70,7 +70,7 @@ services:
       - ./docker/redis:/data
 
   chromadb:
-    restart: on-failure:2
+    restart: unless-stopped
     image: chromadb/chroma:latest
     env_file: ./docker/chromadb/.env
     volumes:
@@ -88,7 +88,7 @@ services:
               capabilities:
                 - gpu
     build: ./docker/localai
-    restart: on-failure:2
+    restart: unless-stopped
     volumes:
       - ./docker/localai/storage:/build/models
     labels:
@@ -113,6 +113,7 @@ services:
     restart: on-failure
     volumes:
       - ./docker/n8n/storage:/home/node/.n8n
+      - ./docker/n8n/custom-nodes:/home/node/.n8n/custom/
     labels:
       - "traefik.http.routers.n8n-secure.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.routers.n8n-secure.tls=true"
@@ -143,7 +144,7 @@ services:
   #   command: --model meta-llama/Llama-3.3-70B-Instruct --port 7474 --max-model-len 65536 --max-num-seqs=8192
 
   traefik:
-    restart: on-failure:2
+    restart: unless-stopped
     image: traefik:3.3.3
     ports:
       - "80:80"
