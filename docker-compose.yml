@@ -1,53 +1,53 @@
 services:
-  stablediffusion:
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities:
-                - gpu
-    build: ./docker/stablediffusion
-    restart: unless-stopped
-    volumes:
-      - ./docker/stablediffusion/src:/usr/src/app
-    labels:
-      - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
-      - "traefik.http.routers.sd-secure.tls=true"
-      - "traefik.http.routers.sd.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
-      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-    command: ./webui.sh --listen
-    ports:
-      - "7860:7860"
+  # stablediffusion:
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities:
+  #               - gpu
+  #   build: ./docker/stablediffusion
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./docker/stablediffusion/src:/usr/src/app
+  #   labels:
+  #     - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
+  #     - "traefik.http.routers.sd-secure.tls=true"
+  #     - "traefik.http.routers.sd.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
+  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  #   command: ./webui.sh --listen
+  #   ports:
+  #     - "7860:7860"
   
-  flowise:
-    build: ./docker/flowise
-    env_file: ./docker/flowise/.env
-    restart: unless-stopped
-    volumes:
-      - ./docker/flowise/.flowise:/root/.flowise
-    labels:
-      - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
-      - "traefik.http.routers.flowise-secure.tls=true"
-      - "traefik.http.routers.flowise.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
-      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-    ports:
-      - '8282:8282'
+  # flowise:
+  #   build: ./docker/flowise
+  #   env_file: ./docker/flowise/.env
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./docker/flowise/.flowise:/root/.flowise
+  #   labels:
+  #     - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
+  #     - "traefik.http.routers.flowise-secure.tls=true"
+  #     - "traefik.http.routers.flowise.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
+  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  #   ports:
+  #     - '8282:8282'
   
-  langflow:
-    build: ./docker/langflow
-    env_file: ./docker/langflow/.env
-    restart: unless-stopped
-    volumes:
-      - ./docker/langflow/storage:/app/langflow
-    labels:
-      - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
-      - "traefik.http.routers.langflow-secure.tls=true"
-      - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
-      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-    ports:
-      - '7862:7860'
+  # langflow:
+  #   build: ./docker/langflow
+  #   env_file: ./docker/langflow/.env
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./docker/langflow/storage:/app/langflow
+  #   labels:
+  #     - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+  #     - "traefik.http.routers.langflow-secure.tls=true"
+  #     - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  #   ports:
+  #     - '7862:7860'
 
   database:
     image: mysql:8.0.32
