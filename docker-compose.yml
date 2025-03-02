@@ -113,7 +113,6 @@ services:
     restart: on-failure
     volumes:
       - ./docker/n8n/storage:/home/node/.n8n
-      - ./docker/n8n/custom-nodes:/home/node/.n8n/custom/
     labels:
       - "traefik.http.routers.n8n-secure.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.routers.n8n-secure.tls=true"
@@ -121,6 +120,7 @@ services:
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
         - 8181:5678
+
 
   # vllm:
   #   deploy:
