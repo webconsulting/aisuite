@@ -88,7 +88,7 @@ services:
               capabilities:
                 - gpu
     build: ./docker/localai
-    env_file: ./docker/n8n/.env
+    env_file: ./docker/localai/.env
     restart: unless-stopped
     volumes:
       - ./docker/localai/storage:/build/models

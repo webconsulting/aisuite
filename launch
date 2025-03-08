@@ -34,6 +34,11 @@ then
 docker compose -p aisuite exec --user=root langflow sh
 fi
 
+if [ "$1" == "n8n" ];
+then
+docker compose -p aisuite exec --user=root n8n sh
+fi
+
 if [ "$1" == "flushcache" ];
 then
 docker compose -p aisuite exec --user=root redis redis-cli flushall
@@ -47,7 +52,6 @@ fi
 if [ "$1" == "create-database" ];
 then
 docker exec -i aisuite-database-1 mysql -uroot -paisuite aisuite < ./docker/database/dump.sql
-
 fi
 
 if [ "$1" == "mkcert" ];

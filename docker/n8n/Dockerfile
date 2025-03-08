@@ -4,19 +4,44 @@ USER root
 
 RUN apk update && \
     apk upgrade -U && \
-    apk add chromium openssl qpdf qpdf-fix-qdf && \
+    apk add --no-cache \
+    chromium \ 
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    udev \
+    ttf-liberation \
+    font-noto-emoji \
+    openssl qpdf qpdf-fix-qdf && \
     rm -rf /var/cache/*
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 USER node
 
 WORKDIR /home/node/.n8n/
+
+RUN n8n &
+
+RUN sleep 20
 
 EXPOSE 5678
 
 USER root
 
 WORKDIR /usr/local/lib/node_modules/n8n
+
+ENV PUPPETEER_CACHE_DIR=/home/node/.cache/puppeteer
 RUN npm install puppeteer --omit=dev
 RUN npm install ssh2 --omit=dev
+RUN npm install ffmpeg
+RUN npm install n8n-nodes-puppeteer
+# RUN chown -R node: /home/node/.cache
 
 USER node
+WORKDIR /home/node/.n8n/
+
