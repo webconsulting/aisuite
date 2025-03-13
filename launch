@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$1" == "start" ];
 then
-docker compose -p aisuite up -d
+docker compose -p aisuite --profile n8n --profile localai up -d
 fi
 
 if [ "$1" == "stop" ];
@@ -42,16 +42,6 @@ fi
 if [ "$1" == "flushcache" ];
 then
 docker compose -p aisuite exec --user=root redis redis-cli flushall
-fi
-
-if [ "$1" == "mysql" ];
-then
-docker compose -p aisuite exec --user=root database mysql -uaisuite -pxxaisuitexx aisuite
-fi
-
-if [ "$1" == "create-database" ];
-then
-docker exec -i aisuite-database-1 mysql -uroot -paisuite aisuite < ./docker/database/dump.sql
 fi
 
 if [ "$1" == "mkcert" ];

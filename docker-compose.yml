@@ -1,53 +1,59 @@
 services:
-  # stablediffusion:
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities:
-  #               - gpu
-  #   build: ./docker/stablediffusion
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./docker/stablediffusion/src:/usr/src/app
-  #   labels:
-  #     - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
-  #     - "traefik.http.routers.sd-secure.tls=true"
-  #     - "traefik.http.routers.sd.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   command: ./webui.sh --listen
-  #   ports:
-  #     - "7860:7860"
+  stablediffusion:
+    profiles:
+      - stablediffusion
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    build: ./docker/stablediffusion
+    restart: unless-stopped
+    volumes:
+      - ./docker/stablediffusion/src:/usr/src/app
+    labels:
+      - "traefik.http.routers.sd-secure.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
+      - "traefik.http.routers.sd-secure.tls=true"
+      - "traefik.http.routers.sd.rule=Host(`127.0.0.1`) || Host(`sd.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    command: ./webui.sh --listen
+    ports:
+      - "7860:7860"
   
-  # flowise:
-  #   build: ./docker/flowise
-  #   env_file: ./docker/flowise/.env
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./docker/flowise/.flowise:/root/.flowise
-  #   labels:
-  #     - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
-  #     - "traefik.http.routers.flowise-secure.tls=true"
-  #     - "traefik.http.routers.flowise.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   ports:
-  #     - '8282:8282'
+  flowise:
+    profiles:
+      - flowise
+    build: ./docker/flowise
+    env_file: ./docker/flowise/.env
+    restart: unless-stopped
+    volumes:
+      - ./docker/flowise/.flowise:/root/.flowise
+    labels:
+      - "traefik.http.routers.flowise-secure.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
+      - "traefik.http.routers.flowise-secure.tls=true"
+      - "traefik.http.routers.flowise.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+      - '8282:8282'
   
-  # langflow:
-  #   build: ./docker/langflow
-  #   env_file: ./docker/langflow/.env
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./docker/langflow/storage:/app/langflow
-  #   labels:
-  #     - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
-  #     - "traefik.http.routers.langflow-secure.tls=true"
-  #     - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   ports:
-  #     - '7862:7860'
+  langflow:
+    profiles:
+      - langflow
+    build: ./docker/langflow
+    env_file: ./docker/langflow/.env
+    restart: unless-stopped
+    volumes:
+      - ./docker/langflow/storage:/app/langflow
+    labels:
+      - "traefik.http.routers.langflow-secure.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+      - "traefik.http.routers.langflow-secure.tls=true"
+      - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+      - '7862:7860'
 
   database:
     image: mysql:8.0.32
@@ -79,6 +85,8 @@ services:
       - 8000:8000
 
   localai:
+    profiles:
+      - localai
     deploy:
       resources:
         reservations:
@@ -100,33 +108,37 @@ services:
     ports:
         - 8081:8080
 
-  # ollama:
-  #   image: ollama/ollama
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ./docker/ollama/storage:/root/.ollama
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities: [gpu]
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ollama list || exit 1
-  #     interval: 60s
-  #     timeout: 80s
-  #     retries: 5
-  #     start_period: 10s
-  #   labels:
-  #     - "traefik.http.routers.ollama-secure.rule=Host(`127.0.0.1`) || Host(`ollama.traefik.me`)"
-  #     - "traefik.http.routers.ollama-secure.tls=true"
-  #     - "traefik.http.routers.ollama.rule=Host(`127.0.0.1`) || Host(`ollama.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+  ollama:
+    profiles:
+      - ollama
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./docker/ollama/storage:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ollama list || exit 1
+      interval: 60s
+      timeout: 80s
+      retries: 5
+      start_period: 10s
+    labels:
+      - "traefik.http.routers.ollama-secure.rule=Host(`127.0.0.1`) || Host(`ollama.traefik.me`)"
+      - "traefik.http.routers.ollama-secure.tls=true"
+      - "traefik.http.routers.ollama.rule=Host(`127.0.0.1`) || Host(`ollama.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
 
   n8n:
+    profiles:
+      - n8n
     deploy:
       resources:
         reservations:
@@ -148,27 +160,28 @@ services:
     ports:
         - 8181:5678
 
-
-  # vllm:
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: all
-  #             capabilities:
-  #               - gpu
-  #   labels:
-  #     - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.routers.vllm-secure.tls=true"
-  #     - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
-  #     - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-  #   ports:
-  #     - 7474:7474
-  #   volumes:
-  #     - ~/.cache/huggingface:/root/.cache/huggingface
-  #   image: vllm/vllm-openai:latest 
-  #   command: --model meta-llama/Llama-3.3-70B-Instruct --port 7474 --max-model-len 65536 --max-num-seqs=8192
+  vllm:
+    profiles:
+      - vllm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    labels:
+      - "traefik.http.routers.vllm-secure.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+      - "traefik.http.routers.vllm-secure.tls=true"
+      - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+      - 7474:7474
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    image: vllm/vllm-openai:latest 
+    command: --model meta-llama/Llama-3.3-70B-Instruct --port 7474 --max-model-len 65536 --max-num-seqs=8192
 
   traefik:
     restart: unless-stopped
