@@ -17,8 +17,21 @@ This solution is configured for Nvidia GPUs by default, but you can easily adapt
 ./launch mkcert
 ./launch start
 ```
-3. Wait for LocalAI which will download all the default AI models (See container log for progress)
-4. launch https://n8n.traefik.me or https://localai.traefik.me
+3. Optional: Import credentials and default workflows, run:
+```
+./launch import-n8n-workflows
+```
+Note : Workflow "Vision image LocalAI" need to install model llava-1.6-mistral on localai (cf 6.)
+
+4. Wait for LocalAI which will download all the default AI models (See container log for progress)
+5. launch https://n8n.traefik.me
+6. You can easily download new models with a single click at https://localai.traefik.me/browse/
+
+For French text-to-speech, you can use voice-fr-siwis-medium (can replace tts-1).
+
+A better text generation model than the default is llama-3.2-3b-agent007 (can replace gpt-4).
+
+Feel free to test others models.
 
 ### Choose Your Favorite LLM Engine and No-Code Tools
 By default, the project uses N8N with LocalAI.
@@ -88,6 +101,37 @@ After creating a wildcard certificate on traefik.me with Mkcert, you can access 
 | Redis Server                     |                               | redis           | redis://redis:6379          | 6379  |
 
 
+
+## Use with default configuration
+- Use https://n8n.traefik.me for n8n
+- In app configurations use the "Address from Docker Network" address (e.g., for N8N, use the provided OpenAI base URL like http://localai:8080).
+
+## Use Offline
+For offline access use 127.0.0.1:
+> http://127.0.0.1:8181 (corresponds to n8n.traefik.me)
+
+Or add the following line to your hosts file:
+> 127.0.0.1 n8n.traefik.me
+
+## LocalAI Default Models
+The project uses an all-in-one image of LocalAI, and you can use the following models:
+
+gpt-4 for text generation (actual model: Hermes-2-pro-mistral)
+
+gpt-4-vision-preview for multimodal vision (actual model: llava-1.6-mistral)
+
+stablediffusion for image generation (actual model: dreamshaper-8)
+
+whisper-1 for speech-to-text (actual model: whisper-base)
+
+tts-1 for text-to-speech (using en-us-amy-low.onnx from rhasspy/piper)
+
+text-embedding-ada-002 for embeddings (actual model: all-MiniLM-L6-v2)
+
+## Stable diffusion with UI
+The web UI source is cloned as a Docker volume to meet startup speed requirements.
+
+
 ## Integrated Open source projects
 Special thanks to all contributors
 
@@ -126,26 +170,3 @@ https://github.com/FiloSottile/mkcert
 
 ### AUTOMATIC1111 for UI on Stable diffusion
 https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
-
-## Use with default configuration
-- Use https://n8n.traefik.me for n8n
-- In app configurations use the "Address from Docker Network" address (e.g., for N8N, use the provided OpenAI base URL like http://localai:8080).
-
-## Use Offline
-For offline access use 127.0.0.1:
-> http://127.0.0.1:8181 (corresponds to n8n.traefik.me)
-
-Or add the following line to your hosts file:
-> 127.0.0.1 n8n.traefik.me
-
-## LocalAI Default Models
-The project uses an all-in-one image of LocalAI, and you can use the following models:
-gpt-4 for text generation (actual model: Hermes-2-pro-mistral)
-gpt-4-vision-preview for multimodal vision (actual model: llava-1.6-mistral)
-stablediffusion for image generation (actual model: dreamshaper-8)
-whisper-1 for speech-to-text (actual model: whisper-base)
-tts-1 for text-to-speech (using en-us-amy-low.onnx from rhasspy/piper)
-text-embedding-ada-002 for embeddings (actual model: all-MiniLM-L6-v2)
-
-### Stable diffusion with UI
-The web UI source is cloned as a Docker volume to meet startup speed requirements.

@@ -39,6 +39,11 @@ then
 docker compose -p aisuite exec --user=root n8n sh
 fi
 
+if [ "$1" == "import-n8n-workflows" ]; then
+  docker compose -p aisuite exec n8n n8n import:credentials --separate --input=/home/node/templates/credentials/
+  docker compose -p aisuite exec n8n n8n import:workflow --separate --input=/home/node/templates/workflow/
+fi
+
 if [ "$1" == "flushcache" ];
 then
 docker compose -p aisuite exec --user=root redis redis-cli flushall
