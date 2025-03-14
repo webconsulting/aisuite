@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$1" == "start" ];
 then
-docker compose -p aisuite --profile n8n --profile localai up -d
+docker compose -p aisuite --profile default up -d
 fi
 
 if [ "$1" == "stop" ];
@@ -17,6 +17,11 @@ fi
 if [ "$1" == "chromadb" ];
 then
 docker compose -p aisuite exec --user=root chromadb sh
+fi
+
+if [ "$1" == "qdrant" ];
+then
+docker compose -p aisuite exec --user=root qdrant sh
 fi
 
 if [ "$1" == "stablediffusion" ];

@@ -45,6 +45,7 @@ Configurations to substitute N8N with Flowise or Langflow, and LocalAI with VLLM
 | ./launch stop            | Stop  all containers                                      |
 | ./launch flowise         | Open a shell terminal in the Flowise container            |
 | ./launch langflow        | Open a shell terminal in the Langflow container           |
+| ./launch qdrant          | Open a shell terminal in the Qdrant container             |
 | ./launch chromadb        | Open a shell terminal in the Chroma DB container          |
 | ./launch stablediffusion | Open a shell terminal in the Stable Diffusion UI          |
 | ./launch n8n             | Open a shell terminal in the N8N container                |
@@ -55,7 +56,7 @@ Configurations to substitute N8N with Flowise or Langflow, and LocalAI with VLLM
 To launch a configuration other than the default, use Docker Compose with profiles.
 Exemples : 
 ```
-docker compose -p aisuite --profile flowise --profile localai up -d
+docker compose -p aisuite --profile flowise --profile localai --profile qdrant up -d
 docker compose -p aisuite --profile langflow --profile ollama up -d
 docker compose -p aisuite --profile n8n --profile vllm up -d
 ```
@@ -82,7 +83,7 @@ mkcert -install
 mkcert "*.traefik.me"
 ```
 These commands will generate two files: _wildcard.traefik.me.pem and _wildcard.traefik.me-key.pem  
-Copy and rename _wildcard.traefik.me.pem to ./docker/traefik/cert/cert.pem (execute this command in the aisuite folder) and
+Copy and rename _wildcard.traefik.me.pem to ./docker/traefik/cert/cert.pem and
 copy _wildcard.traefik.me-key.pem to ./docker/traefik/cert/privkey.pem.
 
 ## Traefik
@@ -96,10 +97,10 @@ After creating a wildcard certificate on traefik.me with Mkcert, you can access 
 | Local Stable diffusion UI        | https://sd.traefik.me         | stablediffusion |                             | 7860  |
 | Local AI API Server (OPENAI API) | https://localai.traefik.me    | localai         | http://localai:8080         | 8081  |
 | VLLM Server (OPENAI API)         | https://vllm.traefik.me       | vllm            | http://vllm:7474            | 7474  |
-| Ollama Server (OPENAI API)       | https://vllm.traefik.me       | ollama          | http://ollama:11434         | 11434 |
+| Ollama Server (OPENAI API)       | https://ollama.traefik.me     | ollama          | http://ollama:11434         | 11434 |
+| Qdrant                           | https://qdrant.traefik.me     | qdrant          | http://qdrant:6333          | 6333  |
 | Chroma Db                        |                               | chromadb        | http://chromadb:8000        | 8000  |
 | Redis Server                     |                               | redis           | redis://redis:6379          | 6379  |
-
 
 
 ## Use with default configuration
@@ -111,7 +112,7 @@ For offline access use 127.0.0.1:
 > http://127.0.0.1:8181 (corresponds to n8n.traefik.me)
 
 Or add the following line to your hosts file:
-> 127.0.0.1 n8n.traefik.me
+> 127.0.0.1 n8n.traefik.me flowise.traefik.me langflow.traefik.me sd.traefik.me localai.traefik.me vllm.traefik.me ollama.traefik.me qdrant.traefik.me
 
 ## LocalAI Default Models
 The project uses an all-in-one image of LocalAI, and you can use the following models:
@@ -130,7 +131,6 @@ text-embedding-ada-002 for embeddings (actual model: all-MiniLM-L6-v2)
 
 ## Stable diffusion with UI
 The web UI source is cloned as a Docker volume to meet startup speed requirements.
-
 
 ## Integrated Open source projects
 Special thanks to all contributors
@@ -155,6 +155,9 @@ https://n8n.io/
 
 ### Stability AI for Stable diffusion
 https://stability.ai/
+
+### Qdrant
+https://qdrant.tech/
 
 ### Chroma
 https://www.trychroma.com/

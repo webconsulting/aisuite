@@ -76,6 +76,8 @@ services:
       - ./docker/redis:/data
 
   chromadb:
+    profiles:
+      - chromadb
     restart: unless-stopped
     image: chromadb/chroma:latest
     env_file: ./docker/chromadb/.env
@@ -83,10 +85,28 @@ services:
       - ./docker/chromadb/storage:/chroma/chroma
     ports:
       - 8000:8000
+  
+  qdrant:
+    profiles:
+      - qdrant
+      - default
+    restart: unless-stopped
+    image: qdrant/qdrant
+    env_file: ./docker/chromadb/.env
+    volumes:
+      - ./docker/qdrant/storage:/qdrant/storage
+    labels:
+      - "traefik.http.routers.qdrant-secure.rule=Host(`127.0.0.1`) || Host(`qdrant.traefik.me`)"
+      - "traefik.http.routers.qdrant-secure.tls=true"
+      - "traefik.http.routers.qdrant.rule=Host(`127.0.0.1`) || Host(`qdrant.traefik.me`)"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+    ports:
+      - 6333:6333
 
   localai:
     profiles:
       - localai
+      - default
     deploy:
       resources:
         reservations:
@@ -139,6 +159,7 @@ services:
   n8n:
     profiles:
       - n8n
+      - default
     deploy:
       resources:
         reservations:
