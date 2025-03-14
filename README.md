@@ -21,7 +21,6 @@ This solution is configured for Nvidia GPUs by default, but you can easily adapt
 ```
 ./launch import-n8n-workflows
 ```
-Note : Workflow "Vision image LocalAI" need to install model llava-1.6-mistral on localai (cf 6.)
 
 4. Wait for LocalAI which will download all the default AI models (See container log for progress)
 5. launch https://n8n.traefik.me
