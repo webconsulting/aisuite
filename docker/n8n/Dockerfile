@@ -38,8 +38,13 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_CACHE_DIR=/home/node/.cache/puppeteer
 
 RUN npm install puppeteer --omit=dev
-RUN npm install ssh2 --omit=dev
 RUN npm install ffmpeg
+
+COPY --chown=node:node extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
+RUN if [ -f /usr/local/lib/node_modules/n8n/extra-packages.txt ]; then \
+      cat /usr/local/lib/node_modules/n8n/extra-packages.txt && \
+      xargs npm install --omit=dev < /usr/local/lib/node_modules/n8n/extra-packages.txt; \
+    fi
 
 USER node
 WORKDIR /home/node/.n8n/

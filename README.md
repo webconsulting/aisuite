@@ -128,6 +128,17 @@ tts-1 for text-to-speech (using en-us-amy-low.onnx from rhasspy/piper)
 
 text-embedding-ada-002 for embeddings (actual model: all-MiniLM-L6-v2)
 
+## N8N add external modules
+To use an external node module on N8N, create a file named extra-packages.txt in the docker/n8n folder and list the modules to install (one per line)
+You will need to rebuild the image
+```
+./launch stop
+cd docker/n8n
+docker build --no-cache .
+cd ../..
+./launch start
+```
+
 ## Stable diffusion with UI
 The web UI source is cloned as a Docker volume to meet startup speed requirements.
 
