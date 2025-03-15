@@ -40,7 +40,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 RUN npm install puppeteer --omit=dev
 RUN npm install ffmpeg
 
-COPY --chown=node:node extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
+COPY *extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
+
 RUN if [ -f /usr/local/lib/node_modules/n8n/extra-packages.txt ]; then \
       cat /usr/local/lib/node_modules/n8n/extra-packages.txt && \
       xargs npm install --omit=dev < /usr/local/lib/node_modules/n8n/extra-packages.txt; \
