@@ -5,40 +5,26 @@ USER root
 RUN apk update && \
     apk upgrade -U && \
     apk add --no-cache \
-    chromium \ 
+    chromium \
     nss \
     freetype \
-    freetype-dev \
     harfbuzz \
     ca-certificates \
     ttf-freefont \
-    udev \
-    ttf-liberation \
-    font-noto-emoji \
     openssl qpdf qpdf-fix-qdf && \
     rm -rf /var/cache/*
 
+RUN chown -R node:node /usr/local/lib/node_modules/n8n
+
 USER node
-
-WORKDIR /home/node/.n8n/
-
-#All of the following is for installing external node modules
-RUN n8n &
-
-RUN sleep 20
-
-EXPOSE 5678
-
-USER root
 
 WORKDIR /usr/local/lib/node_modules/n8n
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
-    PUPPETEER_CACHE_DIR=/home/node/.cache/puppeteer
+ENV PUPPETEER_CACHE_DIR="/home/node/.cache/puppeteer"
+ENV PUPPETEER_DOWNLOAD_PATH="/home/node/.cache/puppeteer"
 
 RUN npm install puppeteer --omit=dev
-RUN npm install ffmpeg
+RUN npm exec puppeteer browsers install chrome
 
 COPY *extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
 
@@ -47,6 +33,6 @@ RUN if [ -f /usr/local/lib/node_modules/n8n/extra-packages.txt ]; then \
       xargs npm install --omit=dev < /usr/local/lib/node_modules/n8n/extra-packages.txt; \
     fi
 
-USER node
 WORKDIR /home/node/.n8n/
 
+EXPOSE 5678
