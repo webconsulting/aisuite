@@ -172,6 +172,7 @@ services:
     env_file: ./docker/n8n/.env
     restart: on-failure
     volumes:
+      - ./docker/n8n/custom-nodes:/home/node/.n8n/custom-nodes
       - ./docker/n8n/storage:/home/node/.n8n
       - ./docker/n8n/templates:/home/node/templates
     labels:
