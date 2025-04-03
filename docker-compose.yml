@@ -175,6 +175,7 @@ services:
       - ./docker/n8n/custom-nodes:/home/node/.n8n/custom-nodes
       - ./docker/n8n/storage:/home/node/.n8n
       - ./docker/n8n/templates:/home/node/templates
+      - ./docker/n8n/projects:/home/node/projects
     labels:
       - "traefik.http.routers.n8n-secure.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.routers.n8n-secure.tls=true"
