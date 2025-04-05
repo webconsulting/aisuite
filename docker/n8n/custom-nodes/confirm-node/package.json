@@ -1,0 +1,32 @@
+{
+    "name": "n8n-nodes-custom-confirm",
+    "version": "1.0.0",
+    "description": "A custom confirm node for human-in-the-loop processes.",
+    "scripts": {
+        "build": "tsc"
+    },
+    "n8n": {
+        "nodes": [
+            {
+                "name": "ConfirmNode",
+                "type": "node",
+                "description": "Node to wait for manual confirmation in a workflow",
+                "icon": "fa:check-circle",
+                "category": "input",
+                "dependencies": []
+            }
+        ]
+    },
+    "dependencies": {
+        "n8n-core": "^1.84.0",
+        "n8n-workflow": "^1.83.0",
+        "nock": "^14.0.2"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.1",
+        "@types/nock": "^10.0.3",
+        "@types/ssh2": "^1.15.5",
+        "typescript": "^5.8.3"
+    },
+    "main": "dist/ConfirmNode.node.js"
+}

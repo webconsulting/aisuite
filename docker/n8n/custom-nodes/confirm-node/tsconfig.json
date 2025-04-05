@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      "skipLibCheck": true,
+      "baseUrl": "./src", // Assurez-vous que baseUrl est bien défini
+      "module": "CommonJS",
+      "target": "ES6",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "esModuleInterop": true,
+      "strict": true,
+      "typeRoots": ["./node_modules/@types"],
+      "paths": {
+        "@/*": ["./*"] // Correspondance des alias avec le bon répertoire
+      }
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/errors/error.types.d.ts"
+    ],
+    "exclude": [
+      "node_modules" // Exclure les répertoires externes de la compilation
+    ]
+}
