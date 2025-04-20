@@ -4,6 +4,7 @@ This solution is configured for Nvidia GPUs by default, but you can easily adapt
 ## Requirement
 - Docker with Compose
 - Device with virtualisation enable
+- NVIDIA drivers installed on the host system
 - Nivdia Container Toolkit
     https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 - Administrative access to the device
