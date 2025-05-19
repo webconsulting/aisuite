@@ -1,47 +1,72 @@
 #!/bin/bash
-if [ "$1" == "start" ];
-then
-docker compose -p aisuite --profile default up -d
+
+# Afficher l'aide si aucun paramètre n'est fourni
+if [ -z "$1" ]; then
+  echo "Usage: ./launch [COMMAND]"
+  echo ""
+  echo "Available commands:"
+  echo "  start                    Start all default containers"
+  echo "  stop                     Stop all containers"
+  echo "  down                     Stop and remove all containers"
+  echo "  update                   Update all containers (down then start)"
+  echo "  flowise                  Open a shell terminal in the Flowise container"
+  echo "  langflow                 Open a shell terminal in the Langflow container"
+  echo "  qdrant                   Open a shell terminal in the Qdrant container"
+  echo "  chromadb                 Open a shell terminal in the Chroma DB container"
+  echo "  stablediffusion          Open a shell terminal in the Stable Diffusion UI"
+  echo "  n8n                      Open a shell terminal in the N8N container"
+  echo "  redis                    Open a redis-cli terminal in the Redis container"
+  echo "  flushcache               Flush all indexes in the Redis container"
+  echo "  mkcert                   Install Mkcert and generate SSL certificates (Linux only)"
+  echo "  import-n8n-workflows     Import N8N workflows and credentials"
+  exit 0
 fi
 
-if [ "$1" == "stop" ];
-then
-docker compose -p aisuite stop
+if [ "$1" == "start" ]; then
+  docker compose -p aisuite --profile default up -d
 fi
 
-if [ "$1" == "flowise" ];
-then
-docker compose -p aisuite exec --user=root flowise sh
+if [ "$1" == "stop" ]; then
+  docker compose -p aisuite stop
 fi
 
-if [ "$1" == "chromadb" ];
-then
-docker compose -p aisuite exec --user=root chromadb sh
+if [ "$1" == "down" ]; then
+  docker compose -p aisuite down
 fi
 
-if [ "$1" == "qdrant" ];
-then
-docker compose -p aisuite exec --user=root qdrant sh
+if [ "$1" == "update" ]; then
+  echo "Stopping and removing containers..."
+  docker compose -p aisuite down
+  echo "Starting containers with updated images..."
+  docker compose -p aisuite --profile default up -d
 fi
 
-if [ "$1" == "stablediffusion" ];
-then
-docker compose -p aisuite exec --user=root stablediffusion sh
+if [ "$1" == "flowise" ]; then
+  docker compose -p aisuite exec --user=root flowise sh
 fi
 
-if [ "$1" == "redis" ];
-then
-docker compose -p aisuite exec --user=root redis redis-cli
+if [ "$1" == "chromadb" ]; then
+  docker compose -p aisuite exec --user=root chromadb sh
 fi
 
-if [ "$1" == "langflow" ];
-then
-docker compose -p aisuite exec --user=root langflow sh
+if [ "$1" == "qdrant" ]; then
+  docker compose -p aisuite exec --user=root qdrant sh
 fi
 
-if [ "$1" == "n8n" ];
-then
-docker compose -p aisuite exec --user=root n8n sh
+if [ "$1" == "stablediffusion" ]; then
+  docker compose -p aisuite exec --user=root stablediffusion sh
+fi
+
+if [ "$1" == "redis" ]; then
+  docker compose -p aisuite exec --user=root redis redis-cli
+fi
+
+if [ "$1" == "langflow" ]; then
+  docker compose -p aisuite exec --user=root langflow sh
+fi
+
+if [ "$1" == "n8n" ]; then
+  docker compose -p aisuite exec --user=root n8n sh
 fi
 
 if [ "$1" == "import-n8n-workflows" ]; then
@@ -49,20 +74,17 @@ if [ "$1" == "import-n8n-workflows" ]; then
   docker compose -p aisuite exec n8n n8n import:workflow --separate --input=/home/node/templates/workflow/
 fi
 
-if [ "$1" == "flushcache" ];
-then
-docker compose -p aisuite exec --user=root redis redis-cli flushall
+if [ "$1" == "flushcache" ]; then
+  docker compose -p aisuite exec --user=root redis redis-cli flushall
 fi
 
-if [ "$1" == "mkcert" ];
-then
-sudo apt update && sudo apt install libnss3-tools
-curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"	
-chmod +x mkcert-v*-linux-amd64
-sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-mkcert -install
-mkcert "*.traefik.me"
-mv _wildcard.traefik.me.pem ./docker/traefik/cert/cert.pem
-mv _wildcard.traefik.me-key.pem ./docker/traefik/cert/privkey.pem
+if [ "$1" == "mkcert" ]; then
+  sudo apt update && sudo apt install libnss3-tools
+  curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"	
+  chmod +x mkcert-v*-linux-amd64
+  sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+  mkcert -install
+  mkcert "*.traefik.me"
+  mv _wildcard.traefik.me.pem ./docker/traefik/cert/cert.pem
+  mv _wildcard.traefik.me-key.pem ./docker/traefik/cert/privkey.pem
 fi
-
