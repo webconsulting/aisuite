@@ -39,19 +39,24 @@ You can replace N8N with Flowise or Langflow, and LocalAI with VLLM or Ollama.
 Configurations to substitute N8N with Flowise or Langflow, and LocalAI with VLLM or Ollama are included.
 
 ### Command with ./launch
-| Command                  | Description                                               |
-| -----------------------  | --------------------------------------------------------- |
-| ./launch start           | Start all default containers                              |
-| ./launch stop            | Stop  all containers                                      |
-| ./launch flowise         | Open a shell terminal in the Flowise container            |
-| ./launch langflow        | Open a shell terminal in the Langflow container           |
-| ./launch qdrant          | Open a shell terminal in the Qdrant container             |
-| ./launch chromadb        | Open a shell terminal in the Chroma DB container          |
-| ./launch stablediffusion | Open a shell terminal in the Stable Diffusion UI          |
-| ./launch n8n             | Open a shell terminal in the N8N container                |
-| ./launch redis           | Open a redis-cli terminal in the Redis container          |
-| ./launch flushcache      | Flush all indexes in the Redis container                  |
-| ./launch mkcert          | Install Mkcert and generate SSL certificates (Linux only) |
+Running the launch script without arguments displays the help menu with all available commands.
+
+| Command                       | Description                                               |
+| ----------------------------- | --------------------------------------------------------- |
+| ./launch start                | Start all default containers                              |
+| ./launch stop                 | Stop all containers                                       |
+| ./launch down                 | Stop and remove all containers                            |
+| ./launch update               | Update all containers (pulls latest images)               |
+| ./launch flowise              | Open a shell terminal in the Flowise container            |
+| ./launch langflow             | Open a shell terminal in the Langflow container           |
+| ./launch qdrant               | Open a shell terminal in the Qdrant container             |
+| ./launch chromadb             | Open a shell terminal in the Chroma DB container          |
+| ./launch stablediffusion      | Open a shell terminal in the Stable Diffusion UI          |
+| ./launch n8n                  | Open a shell terminal in the N8N container                |
+| ./launch redis                | Open a redis-cli terminal in the Redis container          |
+| ./launch flushcache           | Flush all indexes in the Redis container                  |
+| ./launch mkcert               | Install Mkcert and generate SSL certificates (Linux only) |
+| ./launch import-n8n-workflows | Import N8N workflows and credentials                      |
 
 To launch a configuration other than the default, use Docker Compose with profiles.
 Exemples : 
