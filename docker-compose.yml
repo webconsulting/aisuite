@@ -21,7 +21,7 @@ services:
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     command: ./webui.sh --listen
     ports:
-      - "7860:7860"
+      - "127.0.0.1:7860:7860"
   
   flowise:
     profiles:
@@ -37,7 +37,7 @@ services:
       - "traefik.http.routers.flowise.rule=Host(`127.0.0.1`) || Host(`flowise.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-      - '8282:8282'
+      - '127.0.0.1:8282:8282'
   
   langflow:
     profiles:
@@ -53,7 +53,7 @@ services:
       - "traefik.http.routers.langflow.rule=Host(`127.0.0.1`) || Host(`langflow.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-      - '7862:7860'
+      - '127.0.0.1:7862:7860'
 
   database:
     image: mysql:8.0.32
@@ -63,8 +63,6 @@ services:
       MYSQL_USER: aisuite
       MYSQL_PASSWORD: xxaisuitexx
       MYSQL_DATABASE: aisuite
-    ports:
-      - "3306:3306"
     volumes:
       - ./docker/mysql:/var/lib/mysql
 
@@ -84,7 +82,7 @@ services:
     volumes:
       - ./docker/chromadb/storage:/chroma/chroma
     ports:
-      - 8000:8000
+      - 127.0.0.1:8000:8000
   
   qdrant:
     profiles:
@@ -101,7 +99,7 @@ services:
       - "traefik.http.routers.qdrant.rule=Host(`127.0.0.1`) || Host(`qdrant.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-      - 6333:6333
+      - 127.0.0.1:6333:6333
 
   localai:
     profiles:
@@ -126,14 +124,14 @@ services:
       - "traefik.http.routers.localai.rule=Host(`127.0.0.1`) || Host(`localai.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-        - 8081:8080
+        - 127.0.0.1:8081:8080
 
   ollama:
     profiles:
       - ollama
     image: ollama/ollama
     ports:
-      - "11434:11434"
+      - "127.0.0.1:11434:11434"
     volumes:
       - ./docker/ollama/storage:/root/.ollama
     deploy:
@@ -183,7 +181,7 @@ services:
       - "traefik.http.routers.n8n.rule=Host(`127.0.0.1`) || Host(`n8n.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-        - 8181:5678
+        - 127.0.0.1:8181:5678
 
   vllm:
     profiles:
@@ -202,7 +200,7 @@ services:
       - "traefik.http.routers.vllm.rule=Host(`127.0.0.1`) || Host(`vllm.traefik.me`)"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
     ports:
-      - 7474:7474
+      - 127.0.0.1:7474:7474
     volumes:
       - ~/.cache/huggingface:/root/.cache/huggingface
     image: vllm/vllm-openai:latest 
@@ -212,9 +210,9 @@ services:
     restart: unless-stopped
     image: traefik:3.3.3
     ports:
-      - "80:80"
-      - "443:443"
-      - "8180:8180"
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+      - "127.0.0.1:8180:8180"
     labels:
       - "traefik.http.services.traefik.loadbalancer.server.port=8180"
     volumes:
