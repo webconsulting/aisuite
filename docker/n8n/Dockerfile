@@ -14,24 +14,27 @@ RUN apk update && \
     openssl qpdf qpdf-fix-qdf && \
     rm -rf /var/cache/*
 
+RUN npm  install -g npm@11.5.2
 RUN chown -R node:node /usr/local/lib/node_modules/n8n
 
 USER node
 
-WORKDIR /usr/local/lib/node_modules/n8n
+# WORKDIR /usr/local/lib/node_modules/n8n
 
-ENV PUPPETEER_CACHE_DIR="/home/node/.cache/puppeteer"
-ENV PUPPETEER_DOWNLOAD_PATH="/home/node/.cache/puppeteer"
+# ENV PUPPETEER_CACHE_DIR="/home/node/.cache/puppeteer"
+# ENV PUPPETEER_DOWNLOAD_PATH="/home/node/.cache/puppeteer"
 
-RUN npm install puppeteer --omit=dev
-RUN npm exec puppeteer browsers install chrome
 
-COPY *extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
 
-RUN if [ -f /usr/local/lib/node_modules/n8n/extra-packages.txt ]; then \
-      cat /usr/local/lib/node_modules/n8n/extra-packages.txt && \
-      xargs npm install --omit=dev < /usr/local/lib/node_modules/n8n/extra-packages.txt; \
-    fi
+# RUN npm install puppeteer --omit=dev
+# RUN npm exec puppeteer browsers install chrome
+
+# COPY *extra-packages.txt /usr/local/lib/node_modules/n8n/extra-packages.txt
+
+# RUN if [ -f /usr/local/lib/node_modules/n8n/extra-packages.txt ]; then \
+#       cat /usr/local/lib/node_modules/n8n/extra-packages.txt && \
+#       xargs npm install --omit=dev < /usr/local/lib/node_modules/n8n/extra-packages.txt; \
+#     fi
 
 WORKDIR /home/node/.n8n/
 
